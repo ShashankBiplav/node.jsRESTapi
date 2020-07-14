@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/ShashankBiplav/node.jsRESTapi/issues"
   },
-  "homepage": "https://github.com/ShashankBiplav/node.jsRESTapi#readme"
+  "homepage": "https://github.com/ShashankBiplav/node.jsRESTapi#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
