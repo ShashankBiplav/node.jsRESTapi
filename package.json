@@ -1,0 +1,23 @@
+{
+  "name": "nodejsrestapi",
+  "version": "1.0.0",
+  "description": "REST API built on Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShashankBiplav/node.jsRESTapi.git"
+  },
+  "keywords": [
+    "RESTapi",
+    "node.js"
+  ],
+  "author": "Shashank Biplav",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ShashankBiplav/node.jsRESTapi/issues"
+  },
+  "homepage": "https://github.com/ShashankBiplav/node.jsRESTapi#readme"
+}
