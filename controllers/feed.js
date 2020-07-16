@@ -3,18 +3,19 @@ const expressValidator = require('express-validator');
 const Post = require('../models/post.js');
 
 exports.getPosts = (req, res, next) => {
-    res.status(200).json({
-        posts: [{
-            _id: 1,
-            title: 'First Post',
-            content: 'This is my first post !',
-            imageUrl: 'images/car.jpg',
-            creator: {
-                name: 'Shashank Biplav'
-            },
-            createdAt: new Date(),
-        }]
-    });
+    Post.find()
+        .then(posts => {
+            res.status(200).json({
+                message: 'Posts Fetched Successfully.',
+                posts: posts
+            });
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
 };
 
 exports.createPost = (req, res, next) => {
@@ -36,17 +37,38 @@ exports.createPost = (req, res, next) => {
         },
     });
     post.save()
-    .then(result=>{
-        console.log(result);
-        res.status(201).json({
-            message: 'Post created successfully',
-            post: result
+        .then(result => {
+            console.log(result);
+            res.status(201).json({
+                message: 'Post created successfully',
+                post: result
+            });
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         });
-    })
-    .catch((err) => {
-        if (!err.statusCode) {
-          err.statusCode = 500;  
-        }
-        next(err);
-    });
+};
+exports.getPost = (req, res, next) => {
+    const postId = req.params.postId;
+    Post.findById(postId)
+        .then(post => {
+            if (!post) {
+                const error = new Error('Post not found.');
+                error.status = 404;
+                throw error; //throwing error here in async code will reach the next catch block
+            }
+            res.status(200).json({
+                message: 'Post Fetched',
+                post: post
+            });
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
 };
