@@ -1,9 +1,15 @@
 const express = require('express');
+
 const bodyParser = require('body-parser');
+
+const mongoose = require('mongoose');
+
+require('dotenv').config();
 
 const feedRoutes = require('./routes/feed.js');
 
 const app = express();
+const port = process.env.PORT || 8080;
 
 app.use(bodyParser.json()); // for-> application/json
 
@@ -16,4 +22,14 @@ app.use((req, res, next) => {
 
 app.use('/feed',feedRoutes);
 
-app.listen(8080);
+mongoose.connect(process.env.MONGODB_URI,{
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+})
+.then(result=>{
+    console.log('connection successful');
+    app.listen(port, ()=>{
+        console.log(`Listening on port ${port}`);
+    });
+})
+.catch(err=>console.log(err));
