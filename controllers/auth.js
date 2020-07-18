@@ -24,7 +24,7 @@ exports.signup = (req, res, next) => {
             });
             return user.save();
         })
-        .then(user =>{
+        .then(user => {
             res.status(201).json({
                 message: 'User Created',
                 userId: user._id
@@ -36,4 +36,36 @@ exports.signup = (req, res, next) => {
             }
             next(err);
         });
+};
+
+exports.login = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    let loadedUser;
+    User.findOne({
+            email: email
+        })
+        .then(user => {
+            if (!user) {
+                const error = new Error('User with this email not found');
+                eror.statusCode = 401;
+                throw error;
+            }
+            loadedUser = user;
+            return bcrypt.compare(password, user.password);
+        })
+        .then(isEqual => { //returned from password comparison : true or false
+            if (!isEqual){
+                const error = new Error('Wrong Password');
+                error.statusCode = 401;
+                throw error;
+            }
+            
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
 };
