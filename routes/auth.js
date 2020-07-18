@@ -27,6 +27,8 @@ router.put('/signup', [
     })
 ], authController.signup);
 
-router.post('/login',);
+router.post('/login',[
+    expressValidator.check('email').isEmail().normalizeEmail(),
+], authController.login);
 
 module.exports = router;

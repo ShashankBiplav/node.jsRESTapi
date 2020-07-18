@@ -1,5 +1,7 @@
 const expressValidator = require('express-validator');
 
+const jwt = require('jsonwebtoken');
+
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user.js');
@@ -55,12 +57,21 @@ exports.login = (req, res, next) => {
             return bcrypt.compare(password, user.password);
         })
         .then(isEqual => { //returned from password comparison : true or false
-            if (!isEqual){
+            if (!isEqual) {
                 const error = new Error('Wrong Password');
                 error.statusCode = 401;
                 throw error;
             }
-            
+            const token = jwt.sign({ // creating a JWT token
+                email: loadedUser.email,
+                userId: loadedUser._id.toString()
+            }, 'yoursuperdupersecretkeythatisknownonlytoyouandtheserver', {
+                expiresIn: '1h'
+            });
+            res.status(200).json({
+                token: token,
+                userId: loadedUser._id.toString()
+            });
         })
         .catch(err => {
             if (!err.statusCode) {
