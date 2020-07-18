@@ -15,14 +15,14 @@ exports.getPosts = (req, res, next) => {
         .then(count => {
             totalPosts = count;
             return Post.find()
-            .skip((currentPage - 1)* perPage)
-            .limit(perPage);
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
         })
         .then(posts => {
             res.status(200).json({
                 message: 'Posts Fetched Successfully.',
                 posts: posts,
-                totalItems :totalPosts
+                totalItems: totalPosts
             });
         })
         .catch((err) => {
@@ -57,7 +57,7 @@ exports.createPost = (req, res, next) => {
     });
     post.save()
         .then(result => {
-           return User.findById(req.userId);
+            return User.findById(req.userId);
         })
         .then(user => {
             creator = user;
@@ -68,7 +68,10 @@ exports.createPost = (req, res, next) => {
             res.status(201).json({
                 message: 'Post created successfully',
                 post: post,
-                creator: {_id: creator._id, name: creator.name},
+                creator: {
+                    _id: creator._id,
+                    name: creator.name
+                },
             });
         })
         .catch((err) => {
@@ -169,12 +172,18 @@ exports.deletePost = (req, res, next) => {
             }
             clearImage(post.imageUrl);
             return Post.findByIdAndRemove(postId)
-                .then(result => {
-                    console.log(result);
-                    res.status(200).json({
-                        message: 'Post deleted.'
-                    });
-                })
+        })
+        .then(result => {
+            return User.findById(req.userId);
+        })
+        .then(user => {
+            user.posts.pull(postId);
+            return user.save();
+        })
+        .then(res => {
+            res.status(200).json({
+                message: 'Post deleted.'
+            });
         })
         .catch(err => {
             if (!err.statusCode) {
