@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
         error.status = 401;
         throw error;
     }
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(' ')[1]; //Authorization header looks like {Authorization: 'Bearer ' + this.props.token} on the front end
     let decodedToken;
     try {
         decodedToken = jwt.verify(token, 'yoursuperdupersecretkeythatisknownonlytoyouandtheserver');
@@ -20,6 +20,6 @@ module.exports = (req, res, next) => {
         error.status = 401;
         throw error;
     }
-    req.userId = decodedToken.userId;
+    req.userId = decodedToken.userId; //setting userId
     next();
 }
