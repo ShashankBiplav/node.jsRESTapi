@@ -77,7 +77,7 @@ mongoose.connect(process.env.MONGODB_URI, {
        const server = app.listen(port, () => {
             console.log(`Listening on port ${port}`);
         });
-        const io = require('socket.io')(server);
+        const io = require('./socket.js').init(server);
         io.on('connection',socket => {
             console.log('Client connected');
         });
