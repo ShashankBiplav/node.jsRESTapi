@@ -3,6 +3,8 @@ const path = require('path');
 
 const expressValidator = require('express-validator');
 
+const io = require('../socket.js');
+
 const Post = require('../models/post.js');
 
 const User = require('../models/user.js');
@@ -54,6 +56,16 @@ exports.createPost = async (req, res, next) => {
         const user = await User.findById(req.userId);
         user.posts.push(post); //push the posts to list of posts for that user
         await user.save();
+        io.getIO().emit('posts', { //creating socket.io emit channel after a post is created
+            action: 'create',
+            post: {
+                ...post._doc,
+                creator: {
+                    id: req.user,
+                    name: user.name
+                }
+            }
+        });
         res.status(201).json({
             message: 'Post created successfully',
             post: post,
